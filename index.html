@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+<body>
+<script src="js/main.js"></script>
+<script>
+    //ОбЪект Танков Ботов
+    function TankBot() {
+        //изначальный позиция поворота танков
+        this.position = 'down';
+        return this;
+    }
+
+    TankBot.prototype.createPositionTanks = function (x,y) {
+        //координаты танка
+            this.coordinate = [
+                document.querySelector('[posX = "' + x + '"][posY = "' + y + '"]'),
+                document.querySelector('[posX = "' + x + '"][posY = "' + (y - 1) + '"]'),
+                document.querySelector('[posX = "' + (x - 1) + '"][posY = "' + y + '"]'),
+                document.querySelector('[posX = "' + (x + 1)+ '"][posY = "' + y + '"]'),
+                document.querySelector('[posX = "' + (x - 1) + '"][posY = "' + (y + 1) + '"]'),
+                document.querySelector('[posX = "' + (x + 1) + '"][posY = "' + (y + 1) + '"]')
+                ];
+            return this;
+    };
+    // Функция добавления классов для бота
+    TankBot.prototype.addTankClass = function () {
+        for (let i = 0; i < this.coordinate.length; i++){
+            this.coordinate[i].classList.add('bot-body');
+            this.coordinate[i].dataset.clouse = 'false';
+        }
+    };
+    //Функция удаления классов для бота
+    TankBot.prototype.removeTankClass = function (){
+        for(let i = 0; i < this.coordinate.length; i++){
+            this.coordinate[i].classList.remove('bot-body');
+            this.coordinate[i].dataset.clouse = 'true';
+        }
+    };
+    //функция движения вниз
+    TankBot.prototype.moveDown = function () {
+        //получение первой координаты
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        //очистка старых координат
+        this.coordinate.splice(0, this.coordinate.length);
+        //добавление новых соординат и движение вниз
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (_coordinate[1] - 2) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (_coordinate[1]) + '"]'),
+        );
+        return this;
+    }
+    TankBot.prototype.Down = function () {
+        this.removeTankClass();
+        this.moveDown();
+        this.addTankClass();
+    };
+    TankBot.prototype.setTime = function () {
+        console.log(this);
+        setInterval(this.moveDown(), 1000);
+    };
+
+
+</script>
+</body>
+</html>

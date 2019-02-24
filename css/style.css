@@ -1,0 +1,16 @@
+
+
+.br {
+    border: 1px solid black;
+}
+.wh {
+    width: 10px;
+    height: 10px;
+    background-color: #ccc;
+}
+.tank-body {
+    background-color: red;
+}
+.bot-body {
+    background-color: blue;
+}

@@ -15,31 +15,35 @@
     function TankBot() {
         //изначальный позиция поворота танков
         this.position = 'down';
+        this.interval;
+        this.result = 'down';
+        this.interval2;
         return this;
-    }
-
-    TankBot.prototype.createPositionTanks = function (x,y) {
+    };
+    //функция задаёт первоночальные координаты для танка
+    TankBot.prototype.createPositionTanks = function (x, y) {
         //координаты танка
-            this.coordinate = [
-                document.querySelector('[posX = "' + x + '"][posY = "' + y + '"]'),
-                document.querySelector('[posX = "' + x + '"][posY = "' + (y - 1) + '"]'),
-                document.querySelector('[posX = "' + (x - 1) + '"][posY = "' + y + '"]'),
-                document.querySelector('[posX = "' + (x + 1)+ '"][posY = "' + y + '"]'),
-                document.querySelector('[posX = "' + (x - 1) + '"][posY = "' + (y + 1) + '"]'),
-                document.querySelector('[posX = "' + (x + 1) + '"][posY = "' + (y + 1) + '"]')
-                ];
-            return this;
+        this.coordinate = [
+            document.querySelector('[posX = "' + x + '"][posY = "' + y + '"]'),
+            document.querySelector('[posX = "' + x + '"][posY = "' + (y - 1) + '"]'),
+            document.querySelector('[posX = "' + (x - 1) + '"][posY = "' + y + '"]'),
+            document.querySelector('[posX = "' + (x + 1) + '"][posY = "' + y + '"]'),
+            document.querySelector('[posX = "' + (x - 1) + '"][posY = "' + (y + 1) + '"]'),
+            document.querySelector('[posX = "' + (x + 1) + '"][posY = "' + (y + 1) + '"]')
+        ];
+        console.log(this);
+        return this;
     };
     // Функция добавления классов для бота
     TankBot.prototype.addTankClass = function () {
-        for (let i = 0; i < this.coordinate.length; i++){
+        for (let i = 0; i < this.coordinate.length; i++) {
             this.coordinate[i].classList.add('bot-body');
             this.coordinate[i].dataset.clouse = 'false';
         }
     };
     //Функция удаления классов для бота
-    TankBot.prototype.removeTankClass = function (){
-        for(let i = 0; i < this.coordinate.length; i++){
+    TankBot.prototype.removeTankClass = function () {
+        for (let i = 0; i < this.coordinate.length; i++) {
             this.coordinate[i].classList.remove('bot-body');
             this.coordinate[i].dataset.clouse = 'true';
         }
@@ -60,18 +64,176 @@
             document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (_coordinate[1]) + '"]'),
         );
         return this;
-    }
+    };
+    //функция перерисовки движения танка вниз
     TankBot.prototype.Down = function () {
         this.removeTankClass();
         this.moveDown();
         this.addTankClass();
     };
-    TankBot.prototype.setTime = function () {
-        console.log(this);
-        setInterval(this.moveDown(), 1000);
+    TankBot.prototype.setTimeDown = function () {
+        // console.log(this);
+        //очистка интревала
+        clearInterval(this.interval);
+        //задаём поааметр интервала
+        this.interval = setInterval(this.Down.bind(this), 300);
+    };
+    //функция движения вверх
+    TankBot.prototype.moveUp = function () {
+        //получение первой координаты
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        //очистка старых координат
+        this.coordinate.splice(0, this.coordinate.length);
+        //добавление новых соординат и движение вверх
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] + 2) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1]) + '"]')
+        );
+        return this;
+    };
+    //функция перерисовки движения танка вверх
+    TankBot.prototype.Up = function () {
+        this.removeTankClass();
+        this.moveUp();
+        this.addTankClass();
+    };
+    TankBot.prototype.setTimeUp = function () {
+        // console.log(this);
+        clearInterval(this.interval);
+        this.interval = setInterval(this.Up.bind(this), 300);
+    };
+    //Функция движения влево
+    TankBot.prototype.moveLeft = function () {
+        //получение первой координаты
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        //очистка старых координат
+        this.coordinate.splice(0, this.coordinate.length);
+        //добавление новых соординат и движение влево
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 2) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] + 1) + '"]')
+        );
+        return this;
+    };
+    //функция перерисовки движения танка влево
+    TankBot.prototype.Left = function () {
+        this.removeTankClass();
+        this.moveLeft();
+        this.addTankClass();
+    };
+    TankBot.prototype.setTimeLeft = function () {
+        // console.log(this);
+        clearInterval(this.interval);
+        this.interval = setInterval(this.Left.bind(this), 300);
+    };
+    //Функция движения в право
+    TankBot.prototype.moveRight = function () {
+        //получение первой координаты
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        //очистка старых координат
+        this.coordinate.splice(0, this.coordinate.length);
+        //добавление новых соординат и движение в право
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 2) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+        );
+        return this;
+    };
+    //функция перерисовки движения танка в право
+    TankBot.prototype.Right = function () {
+        this.removeTankClass();
+        this.moveRight();
+        this.addTankClass();
+    };
+    TankBot.prototype.setTimeRight = function () {
+        // console.log(this);
+        clearInterval(this.interval);
+        this.interval = setInterval(this.Right.bind(this), 300);
+    };
+    TankBot.prototype.getRandomInt = function (min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
     };
 
+    TankBot.prototype.generatePos = function(pos) {
+        switch (pos) {
+            case 1:
+                return 'up';
+                break;
+            case 2:
+                return 'right';
+                break;
+            case 3:
+                return 'down';
+                break;
+            case 4:
+                return 'left';
+                break;
+        }
+    };
+    TankBot.prototype.GenPosNum = function(){
+        return this.generatePos(this.getRandomInt(1,5));
+    };
+    TankBot.prototype.GeneratePosition = function(){
+        // setInterval(() => {
+        //     this.result = this.GenPosNum.bind(this)();
+        //     console.log(this.result);
+        //     return this.result;
+        // }, 4000);
+        // return this.result =
+    };
+    TankBot.prototype.checkPos = function(pos) {
+        console.log(pos)
+        switch (pos) {
+            case 'up':
+                return this.setTimeUp();
+                break;
+            case 'right':
+                return this.setTimeRight();
+                break;
+            case 'down':
+                return this.setTimeDown();
+                break;
+            case 'left':
+                return this.setTimeLeft();
+                break;
 
+        }
+    };
+    TankBot.prototype.StartPos = function(){
+        console.log(this.checkPos(this.GenPosNum()));
+        return this.checkPos(this.GenPosNum());
+    };
+    TankBot.prototype.start = function(){
+        clearInterval(this.interval2);
+        this.interval2 = setInterval(this.StartPos.bind(this), 4000)
+    };
+
+    let bot = new TankBot();
+    bot.createPositionTanks(50,25);
+    bot.addTankClass();
+
+    // let bot2 = new TankBot()
+    // bot2.createPositionTanks(30, 25);
+    // bot2.addTankClass();
+    // let bot3 = new TankBot()
+    // bot3.createPositionTanks(70, 25);
+    // bot3.addTankClass();
+    // bot.start();
+    // bot2.start();
+    // bot3.start();
+    // console.log(generatePos(getRandomInt(1, 5)));
 </script>
 </body>
 </html>

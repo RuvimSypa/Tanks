@@ -14,10 +14,11 @@
     //ОбЪект Танков Ботов
     function TankBot() {
         //изначальный позиция поворота танков
-        this.position = 'down';
+        this.position;
         this.interval;
         this.result = 'down';
         this.interval2;
+        this.checkPosInt;
         return this;
     };
     //функция задаёт первоночальные координаты для танка
@@ -33,6 +34,83 @@
         ];
         console.log(this);
         return this;
+    };
+    TankBot.prototype.redrawingPosDown = function(){
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        this.coordinate.splice(0, this.coordinate.length);
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+        );
+        return this;
+    };
+    TankBot.prototype.redrawingDown = function() {
+        clearInterval(this.interval);
+        this.removeTankClass();
+        this.redrawingPosDown();
+        this.addTankClass();
+    }
+    TankBot.prototype.redrawingPosLeft = function(){
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        this.coordinate.splice(0, this.coordinate.length);
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+        );
+        return this;
+    };
+    TankBot.prototype.redrawingLeft = function() {
+        clearInterval(this.interval);
+        this.removeTankClass();
+        this.redrawingPosLeft();
+        this.addTankClass();
+    }
+    TankBot.prototype.redrawingPosRight = function(){
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        this.coordinate.splice(0, this.coordinate.length);
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+        );
+        return this;
+    };
+    TankBot.prototype.redrawingRight = function() {
+        clearInterval(this.interval);
+        this.removeTankClass();
+        this.redrawingPosRight();
+        this.addTankClass();
+    };
+
+    TankBot.prototype.redrawingPosUp = function(){
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        this.coordinate.splice(0, this.coordinate.length);
+        this.coordinate.push(
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0]) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] + 1) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
+        );
+        return this;
+    };
+    TankBot.prototype.redrawingUp = function() {
+        clearInterval(this.interval);
+        this.removeTankClass();
+        this.redrawingPosUp();
+        this.addTankClass();
     };
     // Функция добавления классов для бота
     TankBot.prototype.addTankClass = function () {
@@ -67,12 +145,17 @@
     };
     //функция перерисовки движения танка вниз
     TankBot.prototype.Down = function () {
-        this.removeTankClass();
-        this.moveDown();
-        this.addTankClass();
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        if((+_coordinate[1] - 2) > 0) {
+            this.removeTankClass();
+            this.moveDown();
+            this.addTankClass();
+        } else {
+            this.redrawingDown();
+            this.StartPos();
+        }
     };
     TankBot.prototype.setTimeDown = function () {
-        // console.log(this);
         //очистка интревала
         clearInterval(this.interval);
         //задаём поааметр интервала
@@ -97,12 +180,17 @@
     };
     //функция перерисовки движения танка вверх
     TankBot.prototype.Up = function () {
-        this.removeTankClass();
-        this.moveUp();
-        this.addTankClass();
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        if((+_coordinate[1] + 2) < 51) {
+            this.removeTankClass();
+            this.moveUp();
+            this.addTankClass();
+        }else {
+            this.redrawingUp();
+            this.StartPos();
+        }
     };
     TankBot.prototype.setTimeUp = function () {
-        // console.log(this);
         clearInterval(this.interval);
         this.interval = setInterval(this.Up.bind(this), 300);
     };
@@ -114,7 +202,7 @@
         this.coordinate.splice(0, this.coordinate.length);
         //добавление новых соординат и движение влево
         this.coordinate.push(
-            document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
+            document.querySelector('[posX = "' + (+_coordinate[0] -1) + '"][posY = "' + (+_coordinate[1]) + '"]'),
             document.querySelector('[posX = "' + (+_coordinate[0] - 2) + '"][posY = "' + (+_coordinate[1]) + '"]'),
             document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] - 1) + '"]'),
             document.querySelector('[posX = "' + (+_coordinate[0] - 1) + '"][posY = "' + (+_coordinate[1] + 1) + '"]'),
@@ -125,12 +213,17 @@
     };
     //функция перерисовки движения танка влево
     TankBot.prototype.Left = function () {
-        this.removeTankClass();
-        this.moveLeft();
-        this.addTankClass();
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        if((+_coordinate[0] - 2) > 0) {
+            this.removeTankClass();
+            this.moveLeft();
+            this.addTankClass();
+        }else {
+            this.redrawingLeft();
+            this.StartPos();
+        }
     };
     TankBot.prototype.setTimeLeft = function () {
-        // console.log(this);
         clearInterval(this.interval);
         this.interval = setInterval(this.Left.bind(this), 300);
     };
@@ -153,86 +246,90 @@
     };
     //функция перерисовки движения танка в право
     TankBot.prototype.Right = function () {
-        this.removeTankClass();
-        this.moveRight();
-        this.addTankClass();
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        if((+_coordinate[0] + 2) < 101) {
+            this.removeTankClass();
+            this.moveRight();
+            this.addTankClass();
+        }else {
+            this.redrawingRight();
+            this.StartPos();
+        }
     };
     TankBot.prototype.setTimeRight = function () {
         // console.log(this);
         clearInterval(this.interval);
         this.interval = setInterval(this.Right.bind(this), 300);
     };
+    //Функция генерирует рандом числа от 1 до 4
     TankBot.prototype.getRandomInt = function (min, max) {
         return Math.floor(Math.random() * (max - min)) + min;
     };
-
-    TankBot.prototype.generatePos = function(pos) {
+    //Функция возврата направления танка
+    TankBot.prototype.generatePos = function (pos) {
         switch (pos) {
             case 1:
                 return 'up';
-                break;
             case 2:
                 return 'right';
-                break;
             case 3:
                 return 'down';
-                break;
             case 4:
                 return 'left';
-                break;
         }
     };
-    TankBot.prototype.GenPosNum = function(){
-        return this.generatePos(this.getRandomInt(1,5));
+    //Функция запуска направления танка
+    TankBot.prototype.GenPosNum = function () {
+        this.position = this.generatePos(this.getRandomInt(1, 5));
+        return this.position;
     };
-    TankBot.prototype.GeneratePosition = function(){
-        // setInterval(() => {
-        //     this.result = this.GenPosNum.bind(this)();
-        //     console.log(this.result);
-        //     return this.result;
-        // }, 4000);
-        // return this.result =
-    };
-    TankBot.prototype.checkPos = function(pos) {
-        console.log(pos)
+
+    //Функция проверки на повотор танка и запуск движения
+    TankBot.prototype.checkPos = function (pos) {
+        let _coordinate = [this.coordinate[0].getAttribute('posX'), this.coordinate[0].getAttribute('posY')];
+        console.log(pos);
         switch (pos) {
             case 'up':
-                return this.setTimeUp();
-                break;
+                    this.setTimeUp();
+                    break;
             case 'right':
-                return this.setTimeRight();
-                break;
+                    this.setTimeRight();
+                    break;
             case 'down':
-                return this.setTimeDown();
-                break;
+                    this.setTimeDown();
+                    break;
             case 'left':
-                return this.setTimeLeft();
-                break;
-
+                    this.setTimeLeft();
+                    break;
         }
     };
-    TankBot.prototype.StartPos = function(){
+    //Функция запускает проверку на позицию танка
+    TankBot.prototype.StartPos = function () {
         console.log(this.checkPos(this.GenPosNum()));
         return this.checkPos(this.GenPosNum());
     };
-    TankBot.prototype.start = function(){
+
+
+    //Функция запускает игру
+    TankBot.prototype.start = function () {
         clearInterval(this.interval2);
-        this.interval2 = setInterval(this.StartPos.bind(this), 4000)
+        this.interval2 = setInterval(this.StartPos.bind(this), 4000);
+        // this.checkIntervalPos();
     };
 
     let bot = new TankBot();
-    bot.createPositionTanks(50,25);
+    bot.createPositionTanks(50, 25);
     bot.addTankClass();
 
-    // let bot2 = new TankBot()
-    // bot2.createPositionTanks(30, 25);
-    // bot2.addTankClass();
-    // let bot3 = new TankBot()
-    // bot3.createPositionTanks(70, 25);
-    // bot3.addTankClass();
-    // bot.start();
-    // bot2.start();
-    // bot3.start();
+    let bot2 = new TankBot()
+    bot2.createPositionTanks(30, 25);
+    bot2.addTankClass();
+    let bot3 = new TankBot()
+    bot3.createPositionTanks(70, 25);
+    bot3.addTankClass();
+    bot.start();
+    bot2.start();
+    bot3.start();
     // console.log(generatePos(getRandomInt(1, 5)));
 </script>
 </body>
